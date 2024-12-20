@@ -1,3 +1,19 @@
+## AI 더빙 솔루션 만들기
+https://arxiv.org/ 에 괜찮은 오디오 합성 모델이 올라왔길래 포크했습니다.
+emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 지원합니다.
+
+목표로하는 한국드라마의 음성을 다국어 음성으로 번역해서 출력하는 코드를 짜봤습니다.
+이 오픈소스에서 제가 수정한 코드는
+
+test_usage2.py
+run.sh
+
+입니다.
+
+
+
+
+
 [![SVG Banners](https://svg-banners.vercel.app/api?type=origin&text1=CosyVoice🤠&text2=Text-to-Speech%20💖%20Large%20Language%20Model&width=800&height=210)](https://github.com/Akshay090/svg-banners)
 
 ## 👉🏻 CosyVoice 👈🏻
