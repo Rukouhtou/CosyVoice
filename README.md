@@ -1,16 +1,52 @@
 ## AI 더빙 솔루션 만들기
-알파시그널(https://alphasignal.ai/)을 통해 괜찮은 오디오 합성 모델을 찾게된 것 같아 포크했습니다.  
+알파시그널(https://alphasignal.ai/) 을 통해 괜찮은 오디오 합성 모델을 찾게된 것 같아 포크했습니다.  
 emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 지원합니다.  
 
 목표로하는 한국드라마의 음성을 다국어 음성으로 번역해서 출력하는 코드를 짜봤습니다.  
-이 오픈소스에서 제가 수정한건  
+
+<br/>
+
+### 오픈소스의 repo와 이 포크버전이 다른곳  
+- 베트남어 데이터셋 폴더 추가: `custom_data/vietnamese`  
+- 프롬프트용 오디오 폴더 추가: `custom_preprocessed`  
+- 트레이닝용 recipe 수정: `examples/libritts/cosyvoice/run.sh`  
+- 추론된 음성 폴더 추가: `output`  
+- cosyvoice를 사용하여 짠 코드 추가: `test_usage2.py`  
   
-test_usage2.py  
-run.sh  
+### 살펴보실 주요 파일
+- `test_usage2.py`  
+- `examples/libritts/cosyvoice/run.sh`  
+
+  이 두 파일만 보셔도 될 것 같습니다!
+
   
-입니다.  
+### 실행
+- 밑의 원본 CosyVoice의 설명대로 가상환경과 requirements까지 설치
+- 모델은 `CosyVoice2-0.5B`, `CosyVoice-300M`만 설치
+
+  이후 `test_usage2.py`를 실행하시면 되겠습니다!
+
+<br/>
+
+### 결과물 예시
+- 입력:
   
+  https://github.com/user-attachments/assets/995d1199-9fad-4929-b484-ab5ee8e06ab3  
+
+<br/>
+
+- 출력(입력과 동일한 프롬프트) - zeroshot:
   
+  https://github.com/user-attachments/assets/f6f63d78-13f3-488e-8dab-1daeeecded57  
+
+- 출력(입력과 동일한 프롬프트) - cross lingual:
+
+  https://github.com/user-attachments/assets/96d4cf19-76ac-4869-9b18-9d531c91b0a4
+
+
+
+
+<br/><br/>
 
 ## 
 [![SVG Banners](https://svg-banners.vercel.app/api?type=origin&text1=CosyVoice🤠&text2=Text-to-Speech%20💖%20Large%20Language%20Model&width=800&height=210)](https://github.com/Akshay090/svg-banners)
