@@ -34,7 +34,7 @@ __pycache__/
 exp
 # data
 raw_wav
-tensorboard
+# tensorboard
 **/*build*
 
 # Clangd files

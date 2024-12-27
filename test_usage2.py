@@ -125,42 +125,57 @@ for i, j in enumerate(cv2.inference_zero_shot(tts_text=vi_text, prompt_text=tran
 for i, j in enumerate(cv2.inference_cross_lingual(tts_text=vi_text, prompt_speech_16k=source_speech_16k, stream=False)):
     torchaudio.save(f'output/final_cross_lingual3_vi_{i}.wav', j['tts_speech'], cv2.sample_rate)
 
-## => 결과로 저장된 베트남어 음성(final_)은 의미없는 말만 나옵니다.
-## tokenizer.py에 베트남어가 있긴하지만, 결국 모델을 파인튜닝 해야하는것 같습니다.
-## https://github.com/FunAudioLLM/CosyVoice/issues/466,
-## https://github.com/FunAudioLLM/CosyVoice/issues/344 를 참고해보니
-## 새로운 언어의 cover를 위해선 적어도 5천시간 이상의 음성이 필요하다고 하지만,
-## 저는 준비된 베트남어 음성이 없어서 구글 번역기의 음성으로 1~10초 정도의 샘플 16개를 만들어 사용했습니다.
+# => 결과로 저장된 베트남어 음성(final_)은 의미없는 말만 나옵니다.
+# tokenizer.py에 베트남어가 있긴하지만, 결국 모델을 파인튜닝 해야하는것 같습니다.
+# https://github.com/FunAudioLLM/CosyVoice/issues/466,
+# https://github.com/FunAudioLLM/CosyVoice/issues/344 를 참고해보니
+# 새로운 언어의 cover를 위해선 적어도 5천시간 이상의 음성이 필요하다고 하지만,
+# 저는 준비된 베트남어 음성이 없어서 구글 번역기의 음성으로 1~10초 정도의 샘플 16개를 만들어 사용했습니다.
 
-## repo에 훈련을 위한 recipe로 올려둔 run.sh를 바탕으로, 전처리를 위한 샘플 구성을 하여
-## 훈련용과 테스트용의 데이터 폴더를 각각 두 개씩 만들었습니다.
-## 이 후 run.sh를 제 환경에 맞게 수정하고(examples/libritts/cosyvoie/run.sh 참고해주세요!)
-## 저는 윈도우 환경이기에 처음으로 리눅스환경을 만들어 source run.sh하여 돌려보았습니다.
-## (제 환경은 윈도우 + WSL2 + Ubuntu 24.04 에 rtx 2080 super 한 장입니다)
-## 실행에 성공해 마지막 스테이지의 export_jit.py와 export_onnx.py까지 작동해 llm과 flow모델 저장까진 됐지만,
-## train단계는 실패하였습니다.
+# repo에 훈련을 위한 recipe로 올려둔 run.sh를 바탕으로, 전처리를 위한 샘플 구성을 하여
+# 훈련용과 테스트용의 데이터 폴더를 각각 두 개씩 만들었습니다.
+# 이 후 run.sh를 제 환경에 맞게 수정하고(examples/libritts/cosyvoie/run.sh 참고해주세요!)
+# 저는 윈도우 환경이기에 처음으로 리눅스환경을 만들어 source run.sh하여 돌려보았습니다.
+# (제 환경은 윈도우 + WSL2 + Ubuntu 24.04 에 rtx 2080 super 한 장입니다)
+
+# 처음엔 train stage에서 오류가 났지만, torchaudio를 requirements와는 다른 2.0.1로 다운그레이드해주니 해결되었습니다.
+# (https://github.com/FunAudioLLM/CosyVoice/issues/763 참고)
+
+# 이후 아주 짧은 훈련시간(약 25분)후 llm, hifigan, flow 3종류의 모델(총 약 50GB)이 저장됐으며,
+# (tensorboard폴더에 train 로그 확인해 주세요!)
+# 훈련후 생성된 체크포인트들에서 가장 잘 나온 모델(best val)중 하나를 불러와 CosyVoice-300M으로 테스트 해봤습니다.
+# (96번째 에포크 모델 경로: examples/libritts/cosyvoice/exp/cosyvoice/hifigan/torch_ddp/epoch_96_whole.pt)
+import torch
+from hyperpyyaml import load_hyperpyyaml
 
 
-## 실패에 대한 인사이트:
-## 1. 메모리 이슈
-## traceback을 뒤져봐 같은 에러에 대해서 찾아봤습니다.
-## https://github.com/Vision-CAIR/MiniGPT-4/issues/237 을 보니, 메모리 이슈라고하여
-## https://github.com/FunAudioLLM/CosyVoice/issues/593 에서 보니, 글카 한 장당 20gb+라는 글이 있었습니다.
-## 훈련에 돌린 rtx 2080 super의 전용메모리 8gb로는 턱없는 메모리이긴 합니다.
+config_file = "./pretrained_models/CosyVoice-300M/cosyvoice.yaml"
+override_dict = {k: None for k in ['llm', 'flow', 'hift'] if k != "llm"}
 
-## 2. 가상환경 이슈
-## 일단 리눅스 환경을 처음 다뤄봐서 생긴 문제일 수도 있습니다.
-## 훈련을 위한 WSL2 환경 구축 과정에서 deepspeed 모듈이라던가 cuda버전과 torch버전의 match같은
-## traceback에 출력된 에러들에 대해 살펴보고, requirements도 다시 설치해보았지만 문제는 여전했습니다.
+with open(config_file, 'r') as f:
+    configs = load_hyperpyyaml(f, overrides=override_dict)
 
-## 실패한 모델로 합성한 음성.
-## cosyvoie-300M 모델로 훈련 시도 후 저장된 jit(llm.text_encoder.fp16, llm.llm.fp16, flow.encoder.fp32)를
-## cosyvoie2로 카피해 사용해봤습니다.(cv2개체(cosyvoice2)를 load_jit=True로 생성했었습니다)
-for i, j in enumerate(cv2.inference_zero_shot(tts_text=vi_text, prompt_text=transcribed_text, prompt_speech_16k=source_speech_16k, stream=False)):
-    torchaudio.save(f'output/trained_zeroshot3_vi_{i}.wav', j['tts_speech'], cv2.sample_rate)
+model = configs["llm"]
+model.load_state_dict(torch.load("./pretrained_models/CosyVoice-300M/epoch_96_whole.pt", map_location='cpu')["module"])
+cv1.model.llm = model.to("cuda").half()
 
-for i, j in enumerate(cv2.inference_cross_lingual(tts_text=vi_text, prompt_speech_16k=source_speech_16k, stream=False)):
-    torchaudio.save(f'output/trained_cross_lingual3_vi_{i}.wav', j['tts_speech'], cv2.sample_rate)
+
+# 하지만 체크포인트가 불러와지지 않았습니다.(https://github.com/FunAudioLLM/CosyVoice/issues/490)
+# model.py의 llm.load_state_dict의 strict=False로 하니 추론은 가능한걸보면, 저장된 가중치와 모델구조가 일치하지 않는것 같습니다.
+for i, j in enumerate(cv1.inference_zero_shot(tts_text=vi_text, prompt_text=transcribed_text, prompt_speech_16k=source_speech_16k, stream=False)):
+    torchaudio.save(f'output/testfinal_zeroshot3_vi_{i}.wav', j['tts_speech'], cv1.sample_rate)
+
+for i, j in enumerate(cv1.inference_cross_lingual(tts_text=vi_text, prompt_speech_16k=source_speech_16k, stream=False)):
+    torchaudio.save(f'output/testfinal_cross_lingual3_vi_{i}.wav', j['tts_speech'], cv1.sample_rate)
+
+# transcribe로 과연 베트남 음성으로 인식되나 확인.
+trained_audio_path1 = 'output/testfinal_zeroshot3_vi_0.wav'
+trained_text1 = whisper_model.transcribe(trained_audio_path1, language='vi')['text']
+trained_audio_path2 = 'output/testfinal_cross_lingual3_vi_0.wav'
+trained_text2 = whisper_model.transcribe(trained_audio_path2, language='vi')['text']
+print(trained_text1)
+print(trained_text2)
+
 
 
 # 오픈소스로 이런 간단한 프로젝트를 만들어보는건 처음이고, 부족함을 많이 느꼈습니다.
