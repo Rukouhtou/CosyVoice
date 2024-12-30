@@ -11,13 +11,15 @@ emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 
 - 프롬프트용 오디오 폴더 추가: `custom_preprocessed`  
 - 트레이닝용 recipe 수정: `examples/libritts/cosyvoice/run.sh`  
 - 추론된 음성 폴더 추가: `output`  
-- cosyvoice를 사용하여 짠 코드 추가: `test_usage2.py`  
+- cosyvoice를 사용하여 짠 코드 추가: `test_usage2.py`
+- 텐서보드를 이용한 training 로그: `tensorboard`
   
 ### 살펴보실 주요 파일
 - `test_usage2.py`  
-- `examples/libritts/cosyvoice/run.sh`  
+- `examples/libritts/cosyvoice/run.sh`
+- `tensorboard`
 
-  이 두 파일만 보셔도 될 것 같습니다!
+  이 세 파일만 보셔도 될 것 같습니다!
 
   
 ### 실행
