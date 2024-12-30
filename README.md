@@ -1,8 +1,9 @@
 ## AI 더빙 솔루션 만들기
 알파시그널(https://alphasignal.ai/) 을 통해 괜찮은 오디오 합성 모델을 찾게된 것 같아 포크했습니다.  
-emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 지원합니다.  
+emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 지원하여 본 목적에 적합하다고 생각합니다.  
 
 목표로하는 한국드라마의 음성을 다국어 음성으로 번역해서 출력하는 코드를 짜봤습니다.  
+그 중 베트남어를 학습하여 베트남어를 합성하도록 해봤습니다.
 
 <br/>
 
@@ -10,27 +11,30 @@ emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 
 - 베트남어 데이터셋 폴더 추가: `custom_data/vietnamese`  
 - 프롬프트용 오디오 폴더 추가: `custom_preprocessed`  
 - 트레이닝용 recipe 수정: `examples/libritts/cosyvoice/run.sh`  
-- 추론된 음성 폴더 추가: `output`  
-- cosyvoice를 사용하여 짠 코드 추가: `test_usage2.py`
-- 텐서보드를 이용한 training 로그: `tensorboard`
+- 합성한 음성 폴더 추가: `output`  
+- 프로젝트 학습 과정이 담긴 코드 추가: `test_usage2.py`  
+- 학습한 모델로 오디오를 합성하는 코드 추가: `AI_dubbing_solution.py`  
+- 텐서보드를 이용한 training 로그 추가: `tensorboard`
   
 ### 살펴보실 주요 파일
 - `test_usage2.py`  
-- `examples/libritts/cosyvoice/run.sh`
+- `examples/libritts/cosyvoice/run.sh`  
+- `AI_dubbing_solution.py`  
 - `tensorboard`
 
-  이 세 파일만 보셔도 될 것 같습니다!
+  이 네 개만 보셔도 될 것 같습니다!
 
   
 ### 실행
 - 밑의 원본 CosyVoice의 설명대로 가상환경과 requirements까지 설치
 - 모델은 `CosyVoice2-0.5B`, `CosyVoice-300M`만 설치
 
-  이후 `test_usage2.py`를 실행하시면 되겠습니다!
+  `test_usage2.py`와 `AI_dubbing_solution.py`은 윈도우에서도 Run 가능합니다!  
+  학습을 위한 `examples/libritts/cosyvoice/run.sh`은 리눅스환경(혹은 윈도우 + WSL2 + Ubuntu 환경)에서 실행 가능합니다!
 
 <br/>
 
-### 결과물 예시
+### 결과물 예시(en)
 - 입력:
   
   https://github.com/user-attachments/assets/995d1199-9fad-4929-b484-ab5ee8e06ab3  
@@ -46,9 +50,53 @@ emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 
   https://github.com/user-attachments/assets/96d4cf19-76ac-4869-9b18-9d531c91b0a4
 
 
+<br/><br/>
 
+### 텐서보드 분석
+CosyVoice모델 개발자 말로는 새로운 언어를 파는데에 최소 5천시간의 데이터셋이 필요하다고 합니다.(https://github.com/FunAudioLLM/CosyVoice/issues/466)  
+하지만 그러한 양의 데이터는 갖고 있지 않고, 결과를 빠르게 보고싶었기에 구글 번역기로 급조한 극소량의 데이터로 한 번 돌려봤습니다.  
+![cosyvoice_train_log_llm](https://github.com/user-attachments/assets/566773f8-eed4-4ce9-ab94-f2058cc89671)
+
+- TRAIN/acc(훈련 정확도):  
+  100스텝 부근부터 급격하게 정확도가 증가해 1에 가깝게 수렴했습니다. 너무 급격히 증가했고 높은 정확도기에 과적합인 것 같습니다. 적은 데이터셋이 원인인 것 같습니다.
+- TRAIN/loss(훈련 손실):  
+  마찬가지로 급격히 감소하고 0과 가깝게 수렴하고 있으므로 과적합인 것 같습니다.
+- CV/acc(검증 정확도):  
+  50스텝이 조금 안 되는 지점까지는 정확도가 증가하다가 점점 감소하고 있습니다. 데이터가 얼마 안되어 생긴 과적합 같으므로, 데이터를 늘릴 필요가 있어보입니다.
+- CV/loss(검증 손실):  
+  역시 50스텝이 조금 안 되는 지점까지는 loss가 감소하다가 점점 증가하고 있습니다. 훈련 손실이 떨어졌던것과 비교하면 역시 일반화성능은 떨어져 과적합되었음을 보여줍니다.
+- TRAIN/lr(학습률):  
+  examples/libritts/cosyvoice/conf/cosyvoice.yaml 에서 셋팅한걸 보면, scheduler는 warmuplr으로 되어 있어 점점 learning rate이 증가하는 걸 볼 수 있습니다.
+- TRAIN/epoch(훈련 에포크):  
+  총 200에포크이며 에포크 당 2스텝으로 보여집니다.
+
+꽤 큰 규모의 데이터셋(https://github.com/FunAudioLLM/CosyVoice/issues/344) 에서도 저와 비슷한 양상을 보이는 것 같기는 합니다.  
+저대로도 러시아어를 꽤나 잘 말하게 됐다지만 결국 llm학습 이상의 것이 필요한 것 같다네요.  
+지금의 전 기껏해야 recipe를 보고 따라하는 수준이기에 언젠간 성장해서 꼭 완벽하게 학습시켜보고 싶습니다.  
+
+<br/>
+
+### 결과물 예시(vi): 학습한 모델로 합성
+- 입력:
+
+https://github.com/user-attachments/assets/5452b368-1b7c-44dd-a650-cda1ba459ff7  
+
+<br/>
+
+- 출력:
+
+https://github.com/user-attachments/assets/29c9c1a5-71db-4972-b8d0-a2e7a0544756
 
 <br/><br/>
+데이터셋이 적다보니 원하는 말을 합성하진 못했습니다.  
+하지만 위 결과물 음성을 whisper로 transcribe시,  
+적어도 베트남어를 합성하려 하며 베트남어로 인식이 하는데에 성공 했습니다!  
+
+앞으로 다량의 데이터 뿐만 아니라, 다양한 사람들과 양질의 대화를 나누며 성장해서 이런 모델쯤은 완벽하게 학습을 시키는 사람으로 성장하고 싶습니다.  
+이 프로젝트를 하면서 부족한 점도 많이 느꼈지만, 무엇보다 재밌었습니다.  
+저는 강 인공지능 시대에 뒤쳐지지 않기 위해 탐구하는 자세를 굽히지 않고,
+머신러닝에 대한 역량을 키워가고 싶습니다.
+<br/><br/><br/><br/>
 
 ## 
 [![SVG Banners](https://svg-banners.vercel.app/api?type=origin&text1=CosyVoice🤠&text2=Text-to-Speech%20💖%20Large%20Language%20Model&width=800&height=210)](https://github.com/Akshay090/svg-banners)
