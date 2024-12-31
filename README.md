@@ -76,6 +76,15 @@ CosyVoice모델 개발자 말로는 새로운 언어를 파는데에 최소 5천
 
 <br/>
 
+### (선택)미리 학습한 체크포인트 다운
+학습후 pretrained_models/cosyvoice-300M/best_val/llm/epoch_19_whole.pt 의 경로에 체크포인트를 두었습니다.
+혹시나 학습절차는 생략하고 미리 학습한 체크포인트를 다운받아 보시려면 밑의 커맨드를 실행해 주세요!  
+``` sh
+git clone https://huggingface.co/Usamimi/cosyvoice-300M_checkpoint19.git pretrained_models/cosyvoice-300M
+```
+
+<br/>
+
 ### 결과물 예시(vi): 학습한 모델로 합성
 - 입력:
 
