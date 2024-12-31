@@ -1,3 +1,8 @@
+##
+[![SVG Banners](https://svg-banners.vercel.app/api?type=luminance&text1=AI더빙솔루션%20🤖&width=800&height=200)](https://github.com/Akshay090/svg-banners)  
+
+##
+
 ## AI 더빙 솔루션 만들기
 알파시그널(https://alphasignal.ai/) 을 통해 괜찮은 오디오 합성 모델을 찾게된 것 같아 포크했습니다.  
 emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 지원하여 본 목적에 적합하다고 생각합니다.  
@@ -12,7 +17,7 @@ emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 
 - 프롬프트용 오디오 폴더 추가: `custom_preprocessed`  
 - 트레이닝용 recipe 수정: `examples/libritts/cosyvoice/run.sh`  
 - 합성한 음성 폴더 추가: `output`  
-- 프로젝트 학습 과정이 담긴 코드 추가: `test_usage2.py`  
+- 이 프로젝트의 주요 학습 과정이 담긴 코드 추가: `test_usage2.py`  
 - 학습한 모델로 오디오를 합성하는 코드 추가: `AI_dubbing_solution.py`  
 - 텐서보드를 이용한 training 로그 추가: `tensorboard`
   
@@ -77,7 +82,7 @@ CosyVoice모델 개발자 말로는 새로운 언어를 파는데에 최소 5천
 <br/>
 
 ### (선택)미리 학습한 체크포인트 다운
-학습후 pretrained_models/cosyvoice-300M/best_val/llm/epoch_19_whole.pt 의 경로에 체크포인트를 두었습니다.
+학습후 pretrained_models/cosyvoice-300M/best_val/llm/epoch_19_whole.pt 의 경로에 체크포인트를 두었습니다.  
 혹시나 학습절차는 생략하고 미리 학습한 체크포인트를 다운받아 보시려면 밑의 커맨드를 실행해 주세요!  
 ``` sh
 git clone https://huggingface.co/Usamimi/cosyvoice-300M_checkpoint19.git pretrained_models/cosyvoice-300M
