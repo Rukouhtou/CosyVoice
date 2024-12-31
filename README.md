@@ -19,7 +19,7 @@ emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 
 - 합성한 음성 폴더 추가: `output`  
 - 이 프로젝트의 주요 학습 과정이 담긴 코드 추가: `test_usage2.py`  
 - 학습한 모델로 오디오를 합성하는 코드 추가: `AI_dubbing_solution.py`  
-- 텐서보드를 이용한 training 로그 추가: `tensorboard`
+- training 로그를 담은 텐서보드 폴더 추가: `tensorboard`
   
 ### 살펴보실 주요 파일
 - `test_usage2.py`  
@@ -57,9 +57,9 @@ emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 
 
 <br/><br/>
 
-### 텐서보드 분석
+### 학습한 후 텐서보드 분석
 CosyVoice모델 개발자 말로는 새로운 언어를 파는데에 최소 5천시간의 데이터셋이 필요하다고 합니다.(https://github.com/FunAudioLLM/CosyVoice/issues/466)  
-하지만 그러한 양의 데이터는 갖고 있지 않고, 결과를 빠르게 보고싶었기에 구글 번역기로 급조한 극소량의 데이터로 한 번 돌려봤습니다.  
+하지만 그러한 양의 데이터는 갖고 있지 않고, 결과를 빠르게 보고싶었기에 구글 번역기로 급조한 극소량의 베트남어 데이터로 한 번 돌려봤습니다.  
 ![cosyvoice_train_log_llm](https://github.com/user-attachments/assets/566773f8-eed4-4ce9-ab94-f2058cc89671)
 
 - TRAIN/acc(훈련 정확도):  
@@ -82,7 +82,7 @@ CosyVoice모델 개발자 말로는 새로운 언어를 파는데에 최소 5천
 <br/>
 
 ### (선택)미리 학습한 체크포인트 다운
-학습후 pretrained_models/cosyvoice-300M/best_val/llm/epoch_19_whole.pt 의 경로에 체크포인트를 두었습니다.  
+학습후 best val로 뽑힌 체크포인트를 pretrained_models/cosyvoice-300M/best_val/llm/ 의 경로에 두었습니다.  
 혹시나 학습절차는 생략하고 미리 학습한 체크포인트를 다운받아 보시려면 밑의 커맨드를 실행해 주세요!  
 ``` sh
 git clone https://huggingface.co/Usamimi/cosyvoice-300M_checkpoint19.git pretrained_models/cosyvoice-300M
@@ -106,7 +106,7 @@ https://github.com/user-attachments/assets/29c9c1a5-71db-4972-b8d0-a2e7a0544756
 하지만 위 결과물 음성을 whisper로 transcribe시,  
 적어도 베트남어로 인식을 하는데에 성공 했습니다!  
 
-앞으로 다량의 데이터 뿐만 아니라, 다양한 사람들과 양질의 대화를 나누며 성장해서 이런 모델쯤은 완벽하게 학습을 시키는 사람으로 성장하고 싶습니다.  
+앞으로 다량의 데이터 뿐만 아니라, 다양한 사람들과 양질의 대화를 나누며 성장해서 이런 모델쯤은 당연히 완벽하게 학습 시키는 사람으로 성장하고 싶습니다.  
 이 프로젝트를 하면서 부족한 점도 많이 느꼈지만, 무엇보다 재밌었습니다.  
 저는 강 인공지능 시대에 뒤쳐지지 않기 위해 탐구하는 자세를 굽히지 않고,
 머신러닝에 대한 역량을 키워가고 싶습니다.
