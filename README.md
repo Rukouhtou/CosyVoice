@@ -20,9 +20,9 @@ supervised learning을 사용하여, 대규모 다중언어 음성인식모델�
 <br/>
 
 ## 프로젝트
-이 모델은 emotion을 감지하고, voice conversion, 제로샷 합성, 다국어음성을 지원하여 본 목적에 적합하다고 생각합니다.  
+이 모델은 emotion을 재현하고, voice conversion, 제로샷 합성, 다국어음성을 지원하여 본 목적에 적합하다고 생각합니다.  
 
-목표로하는 한국드라마의 음성을 다국어 음성으로 번역해서 출력하는 코드(AI_dubbing_solution.py)를 짜봤습니다.  
+목표로하는 한국어 음성을 다국어 음성으로 번역해서 출력하는 코드(AI_dubbing_solution.py)를 짜봤습니다.  
 그 중 베트남어를 학습하여 베트남어를 합성하도록 해봤습니다.
 
 
@@ -41,15 +41,14 @@ supervised learning을 사용하여, 대규모 다중언어 음성인식모델�
 - `AI_dubbing_solution.py`  
 - `tensorboard`
 
-  이 네 개만 보셔도 될 것 같습니다!
 
   
 ### 실행
-- 밑의 원본 CosyVoice의 설명대로 가상환경과 requirements까지 설치
-- 모델은 `CosyVoice2-0.5B`, `CosyVoice-300M`만 설치
+- 밑의 원본 CosyVoice의 설명대로 가상환경과 requirements까지 설치합니다.
+- 모델은 `CosyVoice2-0.5B`, `CosyVoice-300M`만 설치합니다.
 
-  `test_usage2.py`와 `AI_dubbing_solution.py`은 윈도우에서도 Run 가능합니다!  
-  학습을 위한 `examples/libritts/cosyvoice/run.sh`은 리눅스환경(혹은 윈도우 + WSL2 + Ubuntu 환경)에서 실행 가능합니다!
+  `test_usage2.py`와 `AI_dubbing_solution.py`은 윈도우에서도 Run 가능합니다.  
+  학습을 위한 `examples/libritts/cosyvoice/run.sh`은 리눅스환경(혹은 윈도우 + WSL2 + Ubuntu 환경)에서 실행 가능합니다.
 
 <br/>
 
@@ -120,10 +119,8 @@ https://github.com/user-attachments/assets/29c9c1a5-71db-4972-b8d0-a2e7a0544756
 ### 맺으며
 합성하는걸 보니 말을 아예 안하는 것은 아니고 결과물 음성을 whisper로 transcribe시 베트남어로 인식하는걸 보면,  
 학습에 실패한건 아닌 것 같고 역시 데이터셋이 부족한 것 같습니다.  
-하지만 5천 시간의 다국어 음성데이터를 구하는 것은 역시 쉽지 않은 일 같군요.  
-
-다량의 데이터 뿐만 아니라, 다양한 사람들과 양질의 대화를 나누며 성장해서 이런 모델쯤은 당연히 완벽하게 학습 시키는 사람으로 성장하고 싶습니다.  
-이 프로젝트를 하면서 부족한 점도 많이 느꼈지만, 무엇보다 재밌다는게 원동력이 되는 것 같습니다.  
+하지만 정답 라벨이 있는 5천 시간의 다국어 음성데이터를 구하는 것은 쉽지 않은 일이고, 이러한 점은 supervised 모델의 단점같습니다.  
+이 프로젝트를 하면서 부족한 점도 많이 느꼈지만, 무엇보다 재미있었고 그게 또 원동력이 되었습니다.  
 <br/><br/><br/><br/>
 
 ## 
